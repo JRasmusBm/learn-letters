@@ -39,7 +39,10 @@
 .read-the-docs {
   color: #888;
 }
-output {
-font-size: 16rem;
 
+input {
+  font-size: 16rem;
+  text-align: center;
+  width: 80%;
+  font-family: serif;
 }
