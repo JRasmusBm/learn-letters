@@ -1,16 +1,15 @@
-import * as React from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import * as React from "react";
+import "./App.css";
 
 function useLetter() {
-  const [letter, setLetter] = React.useState('A');
+  const [letter, setLetter] = React.useState("A");
 
   return {
     letter,
     updateLetter() {
-      setLetter('B')
-    }
-  }
+      setLetter("B");
+    },
+  };
 }
 
 function App() {
@@ -18,9 +17,10 @@ function App() {
 
   return (
     <main>
-    <output>{ letter }</output>
+      <output>{letter}</output>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
+
