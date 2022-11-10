@@ -1,67 +1,25 @@
 import * as React from "react";
 import "./App.css";
-
-const letters = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789";
-interface RandomLetterArgs {
-  exclude?: string;
-}
-function randomLetter({ exclude }: RandomLetterArgs = {}): string {
-  const newLetter = letters.charAt(Math.floor(Math.random() * letters.length));
-
-  if (exclude && newLetter.toLowerCase() === exclude.toLowerCase()) {
-    return randomLetter({ exclude });
-  }
-
-  return newLetter;
-}
-
-function useLetter() {
-  const initalLetter = React.useMemo(() => randomLetter, []);
-  const [letter, setLetter] = React.useState(initalLetter);
-
-  return {
-    letter,
-    nextLetter() {
-      setLetter(randomLetter({ exclude: letter }));
-    },
-  };
-}
-
-function useGame() {
-  const { letter, nextLetter } = useLetter();
-  const [lastAttempt, setLastAttempt] = React.useState<null | string>(null);
-  const [result, setResult] = React.useState<null | "right" | "wrong">(null);
-
-  const attempt = React.useCallback(
-    (guess: string) => {
-      if (guess?.toLowerCase() === lastAttempt?.toLowerCase()) {
-        return;
-      }
-
-      if (guess?.toLowerCase() === letter?.toLowerCase()) {
-        nextLetter();
-        setResult("right");
-      } else {
-        setResult("wrong");
-      }
-
-      setLastAttempt(guess);
-    },
-    [letter, lastAttempt, result]
-  );
-
-  return {
-    letter,
-    result,
-    attempt,
-  };
-}
+import { useGame } from "./hooks/game";
+import { supportedLetters, useLetter } from "./hooks/letter";
 
 function App() {
-  const { letter, attempt, result } = useGame();
+  const { letterIndex, word, nextLetter } = useLetter({
+    wordGenerator: "randomLetters",
+  });
+  const { attempt, result } = useGame({
+    matchingStrategy: "caseInsensitive",
+    letter: word[letterIndex],
+    nextLetter,
+  });
 
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
+      if (!supportedLetters.includes(e.key)) {
+        console.debug(`Ignoring keystroke: ${e.key}`);
+        return;
+      }
+
       attempt(e.key);
     }
 
@@ -73,12 +31,25 @@ function App() {
 
   return (
     <main>
-      <input
+      <output
         className={result ?? undefined}
-        value={letter}
         onChange={Event.prototype.preventDefault}
-        autoFocus
-      />
+      >
+        {word.split("").map((letter, index) => (
+          <span
+            className={
+              index < letterIndex
+                ? "right"
+                : index === letterIndex
+                ? `current ${result}`
+                : "upcoming"
+            }
+            key={index}
+          >
+            {letter}
+          </span>
+        ))}
+      </output>
     </main>
   );
 }
