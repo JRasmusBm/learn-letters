@@ -3,7 +3,6 @@
 }
 
 #root {
-  max-width: 1280px;
   margin: 0 0;
   width: 100vw;
   text-align: center;
@@ -21,7 +20,7 @@ output {
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   grid-auto-rows: 12rem;
   align-items: stretch;
-  width: 80vw;
+  width: clamp(200px, 1200px, 80vw);
   font-family: serif;
   flex-wrap: wrap;
 }
