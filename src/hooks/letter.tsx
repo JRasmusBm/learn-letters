@@ -4,13 +4,8 @@ export const supportedLetters =
   "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789";
 
 const state = { i: 0 };
-const words = localStorage.getItem("LEARN_LETTERS_WORDS") || [
-  "Mary",
-  "had",
-  "a",
-  "little",
-  "lamb",
-];
+const raw = localStorage.getItem("LEARN_LETTERS_WORDS");
+const words = raw ? JSON.parse(raw) : ["Mary", "had", "a", "little", "lamb"];
 
 const wordGenerators = {
   randomLetters() {
