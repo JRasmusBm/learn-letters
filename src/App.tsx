@@ -50,6 +50,7 @@ function App() {
           </span>
         ))}
       </output>
+      <input value="" onChange={() => {}} autoFocus={true} />
     </main>
   );
 }
