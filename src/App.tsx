@@ -3,6 +3,18 @@ import "./App.css";
 import { useGame } from "./hooks/game";
 import { supportedLetters, useLetter } from "./hooks/letter";
 
+function FocusedInput(props: React.HTMLProps<HTMLInputElement>) {
+  const ref = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, [ref.current]);
+
+  return <input {...props} autoFocus ref={ref} />;
+}
+
 function App() {
   const { letterIndex, word, nextLetter } = useLetter({
     wordGenerator: "randomLetters",
@@ -31,10 +43,7 @@ function App() {
 
   return (
     <main>
-      <output
-        className={result ?? undefined}
-        onChange={Event.prototype.preventDefault}
-      >
+      <output className={result ?? undefined}>
         {word.split("").map((letter, index) => (
           <span
             className={
@@ -50,7 +59,14 @@ function App() {
           </span>
         ))}
       </output>
-      <input value="" onChange={() => {}} autoFocus={true} />
+      <FocusedInput
+        value=""
+        onChange={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          attempt((e.nativeEvent as any)?.data);
+        }}
+      />
     </main>
   );
 }
