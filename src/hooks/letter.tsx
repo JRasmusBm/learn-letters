@@ -24,7 +24,7 @@ const wordGenerators = {
   },
 };
 
-interface UseLetterArgs {
+export interface UseLetterArgs {
   wordGenerator: keyof typeof wordGenerators;
 }
 

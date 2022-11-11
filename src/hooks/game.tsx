@@ -6,7 +6,7 @@ const matchers = {
   },
 };
 
-interface UseGameArgs {
+export interface UseGameArgs {
   letter: string;
   nextLetter: () => void;
   matchingStrategy: keyof typeof matchers;

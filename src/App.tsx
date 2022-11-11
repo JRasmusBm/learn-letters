@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./App.css";
+import { useConfig } from "./hooks/config";
 import { useGame } from "./hooks/game";
 import { supportedLetters, useLetter } from "./hooks/letter";
 
@@ -16,11 +17,13 @@ function FocusedInput(props: React.HTMLProps<HTMLInputElement>) {
 }
 
 function App() {
+  const { config } = useConfig();
+
   const { letterIndex, word, nextLetter } = useLetter({
-    wordGenerator: "randomLetters",
+    wordGenerator: config.wordGenerator,
   });
   const { attempt, result } = useGame({
-    matchingStrategy: "caseInsensitive",
+    matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
     nextLetter,
   });
