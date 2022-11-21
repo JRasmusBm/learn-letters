@@ -4,32 +4,35 @@ export const supportedLetters =
   "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789";
 
 const state = { i: 0 };
-const raw = localStorage.getItem("LEARN_LETTERS_WORDS");
-const words = raw ? JSON.parse(raw) : ["Mary", "had", "a", "little", "lamb"];
 
 const wordGenerators = {
-  randomLetters() {
-    return Array.from({ length: 5 }, () =>
+  randomLetters({ nRandomLetters }: { nRandomLetters: number }) {
+    return Array.from({ length: nRandomLetters }, () =>
       supportedLetters.charAt(
         Math.floor(Math.random() * supportedLetters.length)
       )
     ).join("");
   },
-  loopWords() {
+  loopWords({ words }: { words: string[] }) {
     state.i += 1;
     return words[state.i % words.length];
-  },
-  loopLetters() {
-    return supportedLetters;
   },
 };
 
 export interface UseLetterArgs {
   wordGenerator: keyof typeof wordGenerators;
+  nRandomLetters: number;
+  words: string[];
 }
 
-export function useLetter({ wordGenerator }: UseLetterArgs) {
-  const initialWord = React.useMemo(() => wordGenerators[wordGenerator](), []);
+export function useLetter({
+  wordGenerator,
+  ...wordGeneratorArgs
+}: UseLetterArgs) {
+  const initialWord = React.useMemo(
+    () => wordGenerators[wordGenerator](wordGeneratorArgs),
+    []
+  );
   const [word, setWord] = React.useState(initialWord);
   const [letterIndex, setLetterIndex] = React.useState(0);
 
@@ -38,7 +41,7 @@ export function useLetter({ wordGenerator }: UseLetterArgs) {
     letterIndex,
     nextLetter() {
       if (letterIndex === word.length - 1) {
-        setWord(wordGenerators[wordGenerator]());
+        setWord(wordGenerators[wordGenerator](wordGeneratorArgs));
         setLetterIndex(0);
         return;
       }

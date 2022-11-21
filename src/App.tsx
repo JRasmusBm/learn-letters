@@ -19,9 +19,7 @@ function FocusedInput(props: React.HTMLProps<HTMLInputElement>) {
 function App() {
   const { config } = useConfig();
 
-  const { letterIndex, word, nextLetter } = useLetter({
-    wordGenerator: config.wordGenerator,
-  });
+  const { letterIndex, word, nextLetter } = useLetter(config);
   const { attempt, result } = useGame({
     matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
