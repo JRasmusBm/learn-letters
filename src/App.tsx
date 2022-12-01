@@ -2,35 +2,26 @@ import * as React from "react";
 import "./App.css";
 import { useConfig } from "./hooks/config";
 import { useGame } from "./hooks/game";
-import { supportedLetters, useLetter } from "./hooks/letter";
-
-function FocusedInput(props: React.HTMLProps<HTMLInputElement>) {
-  const ref = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    if (ref.current) {
-      ref.current.focus();
-    }
-  }, [ref.current]);
-
-  return <input {...props} autoFocus ref={ref} />;
-}
+import { GameUI } from "./GameUI";
+import { useLetter } from "./hooks/letter";
+import { Settings } from "./Settings";
 
 function App() {
-  const { config } = useConfig();
+  const { config, updateConfig } = useConfig();
 
-  const { letterIndex, word, nextLetter } = useLetter({
-    wordGenerator: config.wordGenerator,
-  });
+  const { letterIndex, word, nextLetter } = useLetter(config);
   const { attempt, result } = useGame({
     matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
+    supportedCharacters: config.supportedCharacters,
     nextLetter,
   });
+  const [route, setRoute] =
+    React.useState<"playing" | "configuring">("configuring");
 
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
-      if (!supportedLetters.includes(e.key)) {
+      if (!config.supportedCharacters.includes(e.key)) {
         console.debug(`Ignoring keystroke: ${e.key}`);
         return;
       }
@@ -46,30 +37,26 @@ function App() {
 
   return (
     <main>
-      <output className={result ?? undefined}>
-        {word.split("").map((letter, index) => (
-          <span
-            className={
-              index < letterIndex
-                ? "right"
-                : index === letterIndex
-                ? `current ${result}`
-                : "upcoming"
-            }
-            key={index}
-          >
-            {letter}
-          </span>
-        ))}
-      </output>
-      <FocusedInput
-        value=""
-        onChange={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          attempt((e.nativeEvent as any)?.data);
-        }}
-      />
+      <button
+        id="settings"
+        type="button"
+        onClick={() =>
+          setRoute((r) => (r === "playing" ? "configuring" : "playing"))
+        }
+      >
+        {route === "playing" ? "Settings" : "Play"}
+      </button>
+
+      {route === "playing" ? (
+        <GameUI
+          result={result}
+          word={word}
+          letterIndex={letterIndex}
+          attempt={attempt}
+        />
+      ) : (
+        <Settings updateConfig={updateConfig} config={config} />
+      )}
     </main>
   );
 }

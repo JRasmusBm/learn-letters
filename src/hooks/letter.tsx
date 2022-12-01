@@ -1,35 +1,48 @@
 import * as React from "react";
 
-export const supportedLetters =
-  "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz0123456789";
+const key = "LearnLetters-LetterState";
+const previousState = localStorage.getItem(key);
+const state = previousState ? JSON.parse(previousState) : { i: 0 };
 
-const state = { i: 0 };
-const raw = localStorage.getItem("LEARN_LETTERS_WORDS");
-const words = raw ? JSON.parse(raw) : ["Mary", "had", "a", "little", "lamb"];
+function setLetterState({ i }: { i: number }) {
+  state.i = i;
+  localStorage.setItem(key, JSON.stringify(state));
+}
 
-const wordGenerators = {
-  randomLetters() {
-    return Array.from({ length: 5 }, () =>
-      supportedLetters.charAt(
-        Math.floor(Math.random() * supportedLetters.length)
+export const wordGenerators = {
+  randomLetters({
+    supportedCharacters,
+    nRandomLetters,
+  }: {
+    nRandomLetters: number;
+    supportedCharacters: string;
+  }) {
+    return Array.from({ length: nRandomLetters }, () =>
+      supportedCharacters.charAt(
+        Math.floor(Math.random() * supportedCharacters.length)
       )
     ).join("");
   },
-  loopWords() {
-    state.i += 1;
-    return words[state.i % words.length];
-  },
-  loopLetters() {
-    return supportedLetters;
+  loopWords({ words }: { words: string[] }) {
+    const result = words[state.i % words.length];
+    setLetterState({ i: state.i + 1 });
+    return result;
   },
 };
 
 export interface UseLetterArgs {
+  supportedCharacters: string;
   wordGenerator: keyof typeof wordGenerators;
+  nRandomLetters: number;
+  words: string[];
 }
 
-export function useLetter({ wordGenerator }: UseLetterArgs) {
-  const initialWord = React.useMemo(() => wordGenerators[wordGenerator](), []);
+export function useLetter(args: UseLetterArgs) {
+  const nextWord = React.useCallback(() => {
+    return wordGenerators[args.wordGenerator](args);
+  }, []);
+  const initialWord = React.useMemo(() => nextWord(), [nextWord]);
+
   const [word, setWord] = React.useState(initialWord);
   const [letterIndex, setLetterIndex] = React.useState(0);
 
@@ -38,7 +51,7 @@ export function useLetter({ wordGenerator }: UseLetterArgs) {
     letterIndex,
     nextLetter() {
       if (letterIndex === word.length - 1) {
-        setWord(wordGenerators[wordGenerator]());
+        setWord(wordGenerators[args.wordGenerator](args));
         setLetterIndex(0);
         return;
       }

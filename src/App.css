@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+main {
+  width: clamp(300px, 800px, 80%);
+}
+
 main > input {
   margin-top: 2rem;
 }
@@ -47,6 +51,31 @@ output span.wrong {
 
 output span.upcoming {
   opacity: 0.5;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+}
+
+label textarea {
+  height: 5rem;
+  width: 100%;
+}
+
+button.danger {
+  background: darkred;
+}
+
+button#settings {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+ul.word-config li {
+  display: flex;
+  justify-content: space-between;
 }
 
 @media (max-width: 800px) {
