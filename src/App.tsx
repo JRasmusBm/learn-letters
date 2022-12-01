@@ -17,7 +17,7 @@ function App() {
     nextLetter,
   });
   const [route, setRoute] =
-    React.useState<"playing" | "configuring">("configuring");
+    React.useState<"playing" | "configuring">("playing");
 
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
