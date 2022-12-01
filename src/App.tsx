@@ -3,7 +3,7 @@ import "./App.css";
 import { useConfig } from "./hooks/config";
 import { useGame } from "./hooks/game";
 import { GameUI } from "./GameUI";
-import { supportedLetters, useLetter } from "./hooks/letter";
+import { useLetter } from "./hooks/letter";
 import { Settings } from "./Settings";
 
 function App() {
@@ -13,6 +13,7 @@ function App() {
   const { attempt, result } = useGame({
     matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
+    supportedCharacters: config.supportedCharacters,
     nextLetter,
   });
   const [route, setRoute] =
@@ -20,7 +21,7 @@ function App() {
 
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
-      if (!supportedLetters.includes(e.key)) {
+      if (!config.supportedCharacters.includes(e.key)) {
         console.debug(`Ignoring keystroke: ${e.key}`);
         return;
       }
@@ -37,6 +38,7 @@ function App() {
   return (
     <main>
       <button
+        id="settings"
         type="button"
         onClick={() =>
           setRoute((r) => (r === "playing" ? "configuring" : "playing"))
@@ -53,7 +55,7 @@ function App() {
           attempt={attempt}
         />
       ) : (
-        <Settings />
+        <Settings updateConfig={updateConfig} config={config} />
       )}
     </main>
   );
