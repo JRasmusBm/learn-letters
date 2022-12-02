@@ -12,7 +12,8 @@
 }
 
 main {
-  width: clamp(300px, 800px, 80%);
+  width: clamp(300px, 2000px, 90%);
+  justify-content: center;
 }
 
 main > input {
@@ -24,7 +25,6 @@ output {
   grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   grid-auto-rows: 12rem;
   align-items: stretch;
-  width: clamp(200px, 1200px, 80vw);
   font-family: serif;
   flex-wrap: wrap;
 }
@@ -56,6 +56,7 @@ output span.upcoming {
 label {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 label textarea {
@@ -67,10 +68,27 @@ button.danger {
   background: darkred;
 }
 
+button path {
+  fill: #cccccc;
+}
+
 button#settings {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+button#back {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+button#settings,
+button#settings svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 ul.word-config li {
@@ -81,17 +99,24 @@ ul.word-config li {
 @media (max-width: 800px) {
   html {
     font-size: 10px !important;
-  } 
+  }
 }
 
 @media (max-width: 500px) {
   html {
     font-size: 6px !important;
-  } 
+  }
+
+label textarea {
+  height: 10rem;
+  width: 100%;
+}
 }
 
 @media (max-width: 300px) {
   html {
     font-size: 3px !important;
-  } 
+  }
+
+
 }

@@ -1,10 +1,12 @@
 import * as React from "react";
 import "./App.css";
+
 import { useConfig } from "./hooks/config";
 import { useGame } from "./hooks/game";
 import { GameUI } from "./GameUI";
 import { useLetter } from "./hooks/letter";
 import { Settings } from "./Settings";
+import { SettingsIcon, BackIcon } from "./SvgIcons";
 
 function App() {
   const { config, updateConfig } = useConfig();
@@ -37,15 +39,19 @@ function App() {
 
   return (
     <main>
-      <button
-        id="settings"
-        type="button"
-        onClick={() =>
-          setRoute((r) => (r === "playing" ? "configuring" : "playing"))
-        }
-      >
-        {route === "playing" ? "Settings" : "Play"}
-      </button>
+      {route === "playing" ? (
+        <button
+          id="settings"
+          type="button"
+          onClick={() => setRoute("configuring")}
+        >
+          <SettingsIcon />
+        </button>
+      ) : (
+        <button id="back" type="button" onClick={() => setRoute("playing")}>
+          <BackIcon />
+        </button>
+      )}
 
       {route === "playing" ? (
         <GameUI
