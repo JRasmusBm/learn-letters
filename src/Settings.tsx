@@ -1,9 +1,13 @@
+import * as React from "react";
+
 import { useConfig } from "./hooks/config";
 import { wordGenerators } from "./hooks/letter";
 
 type SettingsProps = ReturnType<typeof useConfig>;
 
 export function Settings({ config, updateConfig }: SettingsProps) {
+  const [word, setWord] = React.useState("");
+
   return (
     <>
       <label>
@@ -39,22 +43,28 @@ export function Settings({ config, updateConfig }: SettingsProps) {
 
       <form
         onSubmit={(e) => {
-          const data = new FormData(e.currentTarget);
-          const newWord = data.get("newWord");
+          e.preventDefault();
 
-          if (!newWord) {
+          if (!word) {
             return;
           }
 
           updateConfig({
             ...config,
-            words: [...config.words, newWord.toString()],
+            words: [...config.words, word],
           });
+
+          setWord("");
         }}
       >
         <label>
           <span>Add word</span>
-          <input type="text" name="newWord" />
+          <input
+            type="text"
+            name="newWord"
+            value={word}
+            onChange={(e) => setWord(e.target.value)}
+          />
         </label>
       </form>
       <ul className="word-config">
