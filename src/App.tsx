@@ -28,6 +28,8 @@ function App() {
         return;
       }
 
+      e.preventDefault();
+      e.stopPropagation();
       attempt(e.key);
     }
 

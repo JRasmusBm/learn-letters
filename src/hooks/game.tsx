@@ -19,7 +19,6 @@ export function useGame({
   matchingStrategy,
   supportedCharacters,
 }: UseGameArgs) {
-  const [lastAttempt] = React.useState<null | string>(null);
   const [result, setResult] = React.useState<null | "right" | "wrong">(null);
 
   const attempt = React.useCallback(
@@ -28,6 +27,7 @@ export function useGame({
         console.debug(`Ignoring keystroke: ${guess}`);
         return;
       }
+
       if (matchers[matchingStrategy](guess, letter)) {
         nextLetter();
         setResult(null);
@@ -35,7 +35,7 @@ export function useGame({
         setResult("wrong");
       }
     },
-    [letter, lastAttempt, result]
+    [letter, result]
   );
 
   return {

@@ -56,7 +56,7 @@ export function useLetter(args: UseLetterArgs) {
         return;
       }
 
-      setLetterIndex(letterIndex + 1);
+      setLetterIndex(letterIndex => letterIndex + 1);
     },
   };
 }
