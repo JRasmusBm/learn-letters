@@ -11,16 +11,6 @@ export function Settings({ config, updateConfig }: SettingsProps) {
   return (
     <>
       <label>
-        <span>Supported Characters</span>
-        <textarea
-          value={config.supportedCharacters}
-          onChange={(e) =>
-            updateConfig({ ...config, supportedCharacters: e.target.value })
-          }
-        />
-      </label>
-
-      <label>
         <span>Mode</span>
         <select
           value={config.wordGenerator}
@@ -41,55 +31,69 @@ export function Settings({ config, updateConfig }: SettingsProps) {
         </select>
       </label>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
+      {config.wordGenerator === "loopWords" ? (
+        <>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
 
-          if (!word) {
-            return;
-          }
+              if (!word) {
+                return;
+              }
 
-          updateConfig({
-            ...config,
-            words: [...config.words, word],
-          });
+              updateConfig({
+                ...config,
+                words: [...config.words, word],
+              });
 
-          setWord("");
-        }}
-      >
+              setWord("");
+            }}
+          >
+            <label>
+              <span>Add word</span>
+              <input
+                type="text"
+                name="newWord"
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+              />
+            </label>
+          </form>
+          <ul className="word-config">
+            {config.words.map((w, i) => {
+              return (
+                <li>
+                  {w}
+                  <button
+                    className="danger"
+                    type="button"
+                    onClick={() =>
+                      updateConfig({
+                        ...config,
+                        words: config.words
+                          .slice(0, i)
+                          .concat(config.words.slice(i + 1)),
+                      })
+                    }
+                  >
+                    Delete
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : (
         <label>
-          <span>Add word</span>
-          <input
-            type="text"
-            name="newWord"
-            value={word}
-            onChange={(e) => setWord(e.target.value)}
+          <span>Characters to Loop</span>
+          <textarea
+            value={config.letters}
+            onChange={(e) =>
+              updateConfig({ ...config, letters: e.target.value })
+            }
           />
         </label>
-      </form>
-      <ul className="word-config">
-        {config.words.map((w, i) => {
-          return (
-            <li>
-              {w}
-              <button
-                className="danger"
-                type="button"
-                onClick={() =>
-                  updateConfig({
-                    ...config,
-                    words: config.words
-                      .slice(0, i)
-                      .concat(config.words.slice(i + 1)),
-                  })
-                }
-              >
-                Delete
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      )}
     </>
   );
 }

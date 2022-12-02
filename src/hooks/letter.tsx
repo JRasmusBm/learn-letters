@@ -11,23 +11,17 @@ function setLetterState({ i }: { i: number }) {
 
 export const wordGenerators = {
   randomLetters({
-    supportedCharacters,
+    letters,
     nRandomLetters,
   }: {
     nRandomLetters: number;
-    supportedCharacters: string;
+    letters: string;
   }) {
     return Array.from({ length: nRandomLetters }, () =>
-      supportedCharacters.charAt(
-        Math.floor(Math.random() * supportedCharacters.length)
-      )
+      letters.charAt(Math.floor(Math.random() * letters.length))
     ).join("");
   },
-  loopWords({
-    words = ["Add", "words", "in", "the", "settings"],
-  }: {
-    words: string[];
-  }) {
+  loopWords({ words }: { words: string[] }) {
     const result = words[state.i % words.length];
     setLetterState({ i: state.i + 1 });
     return result;
@@ -35,7 +29,7 @@ export const wordGenerators = {
 };
 
 export interface UseLetterArgs {
-  supportedCharacters: string;
+  letters: string;
   wordGenerator: keyof typeof wordGenerators;
   nRandomLetters: number;
   words: string[];
@@ -50,17 +44,34 @@ export function useLetter(args: UseLetterArgs) {
   const [word, setWord] = React.useState(initialWord);
   const [letterIndex, setLetterIndex] = React.useState(0);
 
+  const nextLetter = React.useCallback(() => {
+    const check = letterIndex === word.length - 1
+    console.dir(
+      {
+        file: "src/hooks/letter.tsx",
+        line: 53,
+        letterIndex,
+        length: word.length,
+        check
+      },
+      { depth: 20 }
+    );
+
+    if (check) {
+      console.log(2);
+
+      setWord(wordGenerators[args.wordGenerator](args));
+      setLetterIndex(0);
+      return;
+    }
+    console.log(3);
+
+    setLetterIndex((letterIndex) => letterIndex + 1);
+  }, [letterIndex, setWord, setLetterIndex, args, wordGenerators]);
+
   return {
     word,
     letterIndex,
-    nextLetter() {
-      if (letterIndex === word.length - 1) {
-        setWord(wordGenerators[args.wordGenerator](args));
-        setLetterIndex(0);
-        return;
-      }
-
-      setLetterIndex((letterIndex) => letterIndex + 1);
-    },
+    nextLetter,
   };
 }

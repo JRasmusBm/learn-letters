@@ -9,7 +9,6 @@ const matchers = {
 export interface UseGameArgs {
   letter: string;
   nextLetter: () => void;
-  supportedCharacters: string;
   matchingStrategy: keyof typeof matchers;
 }
 
@@ -17,17 +16,11 @@ export function useGame({
   letter,
   nextLetter,
   matchingStrategy,
-  supportedCharacters,
 }: UseGameArgs) {
   const [result, setResult] = React.useState<null | "right" | "wrong">(null);
 
   const attempt = React.useCallback(
     (guess: string) => {
-      if (!supportedCharacters.includes(guess)) {
-        console.debug(`Ignoring keystroke: ${guess}`);
-        return;
-      }
-
       if (matchers[matchingStrategy](guess, letter)) {
         nextLetter();
         setResult(null);
@@ -35,7 +28,7 @@ export function useGame({
         setResult("wrong");
       }
     },
-    [letter, result]
+    [letter, nextLetter, result, setResult]
   );
 
   return {

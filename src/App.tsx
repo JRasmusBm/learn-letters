@@ -19,7 +19,6 @@ function App() {
   const { attempt, result } = useGame({
     matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
-    supportedCharacters: config.supportedCharacters,
     nextLetter,
   });
   const [route, setRoute] =
@@ -28,11 +27,6 @@ function App() {
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
       if ((e.target as any).tagName === "INPUT") {
-        return;
-      }
-
-      if (!config.supportedCharacters.includes(e.key)) {
-        console.debug(`Ignoring keystroke: ${e.key}`);
         return;
       }
 
