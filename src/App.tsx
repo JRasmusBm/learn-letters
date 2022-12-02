@@ -11,7 +11,11 @@ import { SettingsIcon, BackIcon } from "./SvgIcons";
 function App() {
   const { config, updateConfig } = useConfig();
 
-  const { letterIndex, word, nextLetter } = useLetter(config);
+  const {
+    letterIndex,
+    word = "Add words in settings!",
+    nextLetter,
+  } = useLetter(config);
   const { attempt, result } = useGame({
     matchingStrategy: config.matchingStrategy,
     letter: word[letterIndex],
@@ -23,6 +27,10 @@ function App() {
 
   React.useEffect(() => {
     function handleKeyPress(e: KeyboardEvent) {
+      if ((e.target as any).tagName === "INPUT") {
+        return;
+      }
+
       if (!config.supportedCharacters.includes(e.key)) {
         console.debug(`Ignoring keystroke: ${e.key}`);
         return;

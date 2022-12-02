@@ -23,7 +23,11 @@ export const wordGenerators = {
       )
     ).join("");
   },
-  loopWords({ words }: { words: string[] }) {
+  loopWords({
+    words = ["Add", "words", "in", "the", "settings"],
+  }: {
+    words: string[];
+  }) {
     const result = words[state.i % words.length];
     setLetterState({ i: state.i + 1 });
     return result;
@@ -56,7 +60,7 @@ export function useLetter(args: UseLetterArgs) {
         return;
       }
 
-      setLetterIndex(letterIndex => letterIndex + 1);
+      setLetterIndex((letterIndex) => letterIndex + 1);
     },
   };
 }
