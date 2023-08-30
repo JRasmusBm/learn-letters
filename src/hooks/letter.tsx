@@ -17,14 +17,14 @@ export const wordGenerators = {
     nRandomLetters: number;
     letters: string;
   }) {
-    return Array.from({ length: nRandomLetters }, () =>
+    return { words: Array.from({ length: nRandomLetters }, () =>
       letters.charAt(Math.floor(Math.random() * letters.length))
-    ).join("");
+    ).join("") };
   },
   loopWords({ words }: { words: string[] }) {
     const result = words[state.i % words.length];
     setLetterState({ i: state.i + 1 });
-    return result;
+    return { words: result };
   },
 };
 
@@ -41,7 +41,7 @@ export function useLetter(args: UseLetterArgs) {
   }, []);
   const initialWord = React.useMemo(() => nextWord(), [nextWord]);
 
-  const [word, setWord] = React.useState(initialWord);
+  const [{ word }, setWord] = React.useState(initialWord);
   const [letterIndex, setLetterIndex] = React.useState(0);
 
   const nextLetter = React.useCallback(() => {
